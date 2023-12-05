@@ -328,6 +328,27 @@ if(abs(q.l-l)+abs(q.r-r)>(r-l+1)+(q.r-q.l+1))
 	没想到只优化了 $1$ ms（悲。也许是每次都判断的代价太大，抵消了直接跳转的优化。
 \end{frame}
 
+\begin{frame}[fragile]{预处理 $bel$}
+	我写好几题才发现其他大佬都预处理了 $bel$，于是赶紧改过来。
+	\small
+\begin{verbatim}
+int S;
+int bel[N];
+inline void initbel()// 1~S: 1
+{
+    S=int(ceil(pow(n,0.5)));// S=sqrt(n)
+    for(int i=1;i<=n;i++)bel[i]=(i-1)/S+1;
+}
+...
+void mt()
+{
+    initbel();
+    sort(q+1,q+m+1);
+    ...
+}
+\end{verbatim}
+\end{frame}
+
 \subsection{例题}
 
 \begin{frame}
