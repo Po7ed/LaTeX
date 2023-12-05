@@ -1,5 +1,0 @@
-\beamer@sectionintoc {1}{一些定义}{3}{0}{1}
-\beamer@sectionintoc {2}{KMP}{10}{0}{2}
-\beamer@sectionintoc {3}{exKMP/Z 函数}{31}{0}{3}
-\beamer@sectionintoc {4}{Manacher}{33}{0}{4}
-\beamer@sectionintoc {5}{Trie}{35}{0}{5}

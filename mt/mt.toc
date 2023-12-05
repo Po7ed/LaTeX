@@ -1,9 +1,0 @@
-\beamer@sectionintoc {1}{前言}{3}{0}{1}
-\beamer@sectionintoc {2}{简介}{5}{0}{2}
-\beamer@sectionintoc {3}{普通莫队}{11}{0}{3}
-\beamer@subsectionintoc {3}{1}{算法基础}{12}{0}{3}
-\beamer@subsectionintoc {3}{2}{算法优化}{24}{0}{3}
-\beamer@subsectionintoc {3}{3}{例题}{33}{0}{3}
-\beamer@sectionintoc {4}{带修莫队}{40}{0}{4}
-\beamer@subsectionintoc {4}{1}{简介}{41}{0}{4}
-\beamer@subsectionintoc {4}{2}{例题}{42}{0}{4}
