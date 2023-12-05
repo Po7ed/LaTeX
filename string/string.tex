@@ -1,0 +1,210 @@
+\documentclass[table]{beamer}
+
+\usepackage{graphicx, graphics}
+\usepackage{float, array, color, ctex}
+\usepackage{amsmath, amssymb}
+\usepackage{multicol, multirow, makecell, tabu, dcolumn}
+\usepackage{fancyhdr, lastpage}
+\usepackage{listings, xcolor}
+\usepackage{xeCJKfntef}
+\usepackage{fontspec, xunicode, xltxtra}
+\usepackage{setspace}
+\usepackage{geometry}
+
+\usepackage[UTF8, noindent]{ctexcap}
+\usetheme{Szeged}
+\usecolortheme{beaver}
+\usefonttheme[math]{serif}
+
+\title{字符串算法}
+\author{张敬东}
+\institute{福州第十六中学}
+\date{\today}
+
+\AtBeginSection[]
+{
+	\begin{frame}
+		\frametitle{目录}
+		\tableofcontents[currentsection]
+	\end{frame}
+}
+
+\begin{document}
+
+\frame{\titlepage} % 生成标题页
+
+\begin{frame} % 生成目录页
+	\frametitle{目录}
+
+	\tableofcontents
+
+\end{frame}
+
+\section{一些定义}
+
+\begin{frame}{一些定义}
+	\begin{itemize}
+		\item 默认字符串下标从 $0$ 开始。
+		\pause
+		\item 字符串 $s$ 中字符的个数称为\textbf{字符串的长度，记作 $|s|$}；
+		\pause
+		\item $s$ 中第 $i$ 个字符记作 $s_i$。
+		\pause
+		\item $s$ 的子串 $s[i\dots j]$ 表示字符 $s[i],\dots,s[j]$ 串起来形成的字符串；
+		\pause
+		\item $s[1\dots i]$ 是 $s$ 到 $i$ 的前缀，$s[i\dots |s|-1]$ 是 $s$ 的后缀。
+		
+		其中若 $s[1\dots i]\ne s$，则称其为 $s$ 的真前缀。真后缀同理。
+		\pause
+		\item 回文串是形如 $\texttt{abcba},\texttt{abccba}$ 的字符串。
+	\end{itemize}
+\end{frame}
+
+\section{KMP}
+
+\begin{frame}{字符串查找}
+	有时我们希望在文本串 $t$ 中查找模式串 $s$。比如你按下 Ctrl+F 时浏览器就会在页面中查找你输入的字符串。
+	\pause
+	
+	一种方法是暴力查找，时间复杂度 $O(nm)$。有没有更快的方法呢？
+	\pause
+
+	\begin{block}{注意}
+		本节中规定：文本串 $t$，模式串 $s$，$m=|t|,n=|s|$。
+	\end{block}
+\end{frame}
+
+\begin{frame}{前缀函数}
+	定义：
+	\begin{itemize}
+		\item $s$ 的 border：$s$ 的最长公共真前后缀。例如 $\texttt{abccdabc}$ 的 border 为 $\texttt{abc}$。
+		\item $s$ 前缀函数 $\pi_i$：$s[1\dots i]$ 的 border 长度。显然 $\pi_0=0$。
+	\end{itemize}
+	\pause
+
+	对于 $s=\texttt{abcabcd}$，$\pi_0=0,\pi_1=0,\pi_2=0,\pi_3=1,\pi_4=2,\pi_5=3,\pi_6=0$。
+	\pause
+
+	\textbf{那么如何计算前缀函数呢？}
+\end{frame}
+
+\begin{frame}{前缀函数的计算}
+	观察可以发现 $\pi_i$ 至多增加 $1$，也就是说如果考虑现在算 $\pi_i$，那么我们希望最好 $\pi_i=\pi_{i-1}+1$，此时 $s[\pi_{i-1}]=s[i]$。
+	\pause
+	
+	如：
+	$$\underbrace{\overbrace{s_0 ~ s_1 ~ s_2}^{\pi_{i-1} = 3} ~ s_3}_{\pi_i = 4} ~ \dots ~ \underbrace{\overbrace{s_{i-3} ~ s_{i-2} ~ s_{i-1}}^{\pi_{i-1}=3} ~ s_{i}}_{\pi_i = 4}$$
+	（来自 OI-Wiki。）
+
+	此时 $\pi_{i-1}=3$，我们希望 $s[3]=s[i]$，这样就可以得到 $\pi_i=\pi_{i-1}+1$。
+\end{frame}
+
+\begin{frame}
+	\textbf{但是}，如果 $s[\pi_{i-1}]\ne s[i]$，那怎么办？我们将这种情况称为“失配”。
+	\pause
+
+	失配时，我们依然想让 border 尽可能地长，所以我们希望找到一个
+	\textbf{严格次长 border}。我们将原 border 记为 $b$，严格次长 border 记为 $b'$。
+	\pause
+
+	\begin{enumerate}
+		\item 首先 $|b|>|b'|$（所以是“真前后缀”）。
+		\pause
+		\item 然后又由于 $b'$ 和 $b$ 均是 $s[1\dots i-1]$ 的公共真前后缀，
+		故 $b'$ 是 $b$ 的公共真前后缀（可以从下图看出）。
+		\textbf{注意，$b$ 和 $b'$ 并不表示长度，而是字符串}，左右两对字符串 $b$ 和 $b'$ 是分别相等的。
+		左边可以看出 $b'$ 是 $b$ 的前缀，右边可以看出 $b'$ 是 $b$ 的后缀。
+		\pause
+		\item 因为我们规定是\textbf{严格次长 border}，
+		所以除了 $b$ 没有其他 border 比 $b'$ 长，又因为 $b'$ 是 $b$ 的公共真前后缀，
+		\textbf{所以 $b'$ 是 $b$ 的 border}。
+	\end{enumerate}
+$$\overbrace{\underbrace{s_0 ~ s_1}_{b'} ~ s_2 ~ s_3}^{b} ~ \dots ~ \overbrace{s_{i-4} ~ s_{i-3} ~ \underbrace{s_{i-2} ~ s_{i-1}}_{b'}}^{b} ~ s_{i}$$
+\end{frame}
+
+\begin{frame}{总结：前缀函数}
+	所以我们找到了一个递归关系：一个 border 的严格次长 border 为它自己的 border。（好绕啊！）
+	前缀函数的求法就出来了：
+	\begin{itemize}
+		\item 先看是否满足 $s[\pi_{i-1}]=s[i]$。
+		\item 如果满足，那么 $\pi_i=\pi_{i-1}+1$。
+		\item 否则就是失配，检查严格次长 border 能否匹配：$s[|b'|]=s[i]$。
+		\begin{itemize}
+			\item 若还是不能，继续上一个操作，使 $b\gets b',b'\gets b~的~\text{border}$。
+			（检查严格次长 border 的严格次长 border，或者说检查严格次次长 border）。
+			直到无解或匹配上。
+			\item 如果匹配，$\pi_{i}=|b'|$。
+			\item 如果无解，$\pi_{i}=0$。
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{代码：前缀函数}
+	所以最终我们可以构建一个不需要进行任何字符串比较，并且只进行 $O(n)$ 次操作的算法。
+	而且该算法的实现出人意料的短且直观：（摘自 OI-Wiki。）
+\begin{verbatim}
+vector<int> prefix_function(string s) {
+    int n = (int)s.length();
+    vector<int> pi(n);
+    for (int i = 1; i < n; i++) {
+        int j = pi[i - 1];
+        while (j > 0 && s[i] != s[j]) j = pi[j - 1];
+        if (s[i] == s[j]) j++;
+        pi[i] = j;
+    }
+    return pi;
+}
+\end{verbatim}
+\end{frame}
+
+\begin{frame}{KMP}
+	说了半天前缀函数，KMP 到底怎么回事？
+	\pause
+
+	你先别急，你如果能真的理解前缀函数，那 KMP 就是小菜一碟了。
+	\pause
+
+	在文本串 $t$ 中查找模式串 $s$ 时，我们令 $u=s+\#+t$，其中 $+$ 为拼接，
+	$\#$ 为任意 $s$ 和 $t$ 中不包含的字符。对 $u$ 求前缀函数，若 $\pi_i=n$，
+	那么 $u[i-n+1\dots i]=s$。
+	\pause
+
+	细想为什么：若 $\pi_i=n$，那么 $s[1\dots i]$ 的最长公共真前后缀就是 $s$，
+	也就是说 $t$ 中也出现了一个完整的 $s$，我们就成功在 $t$ 中查找到 $s$ 啦！
+\end{frame}
+
+\begin{frame}[fragile]{代码：KMP}
+\begin{verbatim}
+    vector<int> find_occurrences(string t, string s) {
+        string cur = s + '#' + t;
+        int m = t.size(), n = s.size();
+        vector<int> v;
+        vector<int> lps = prefix_function(cur);
+        for (int i = n + 1; i <= m + n; i++) {
+            if (lps[i] == n)
+                v.push_back(i - 2 * n);
+        }
+        return v;
+    }
+\end{verbatim}
+\end{frame}
+
+\section{exKMP/Z 函数}
+
+\begin{frame}
+	an exKMP.
+\end{frame}
+
+\section{Manacher}
+
+\begin{frame}
+	a Manacher.
+\end{frame}
+
+\section{Trie}
+
+\begin{frame}
+	
+\end{frame}
+
+\end{document}

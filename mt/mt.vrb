@@ -1,0 +1,28 @@
+\frametitle{例题：{\color {blue}\href {https://www.luogu.com.cn/problem/P1903}{P1903 [国家集训队] 数颜色 / 维护队列}}}
+\tiny
+\begin{verbatim}
+int cnt[A],bt,ans[N];// 类似于普通莫队
+void mt()
+{
+    S=int(ceil(pow(n,0.66)));// 这里块长需要调整，具体可以可以看
+    // https://oi-wiki.org/misc/modifiable-mo-algo/ 中的证明
+    sort(q+1,q+qm+1);
+    for(int i=1,l=1,r=0,t=0;i<=qm;i++)
+    {
+        #define q q[i]
+        #define p mo[t].p
+        #define v mo[t].v
+        while(q.l<l)bt+=(!(cnt[a[--l]]++));// 类似
+        while(r<q.r)bt+=(!(cnt[a[++r]]++));
+        while(l<q.l)bt-=(!(--cnt[a[l++]]));
+        while(q.r<r)bt-=(!(--cnt[a[r--]]));
+        // 可怕的压行：【需要当场解释】
+        while(t<q.t){t++;if(l<=p&&p<=r)bt-=(!(--cnt[a[p]])-!(cnt[v]++));swap(a[p],v);}
+        while(q.t<t){if(l<=p&&p<=r)bt-=(!(--cnt[a[p]])-!(cnt[v]++));swap(a[p],v);t--;}
+        ans[q.id]=bt;
+        #undef q
+        #undef p
+        #undef v
+    }
+}
+\end{verbatim}

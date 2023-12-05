@@ -1,0 +1,14 @@
+\frametitle{代码：KMP}
+\begin{verbatim}
+    vector<int> find_occurrences(string t, string s) {
+        string cur = s + '#' + t;
+        int m = t.size(), n = s.size();
+        vector<int> v;
+        vector<int> lps = prefix_function(cur);
+        for (int i = n + 1; i <= m + n; i++) {
+            if (lps[i] == n)
+                v.push_back(i - 2 * n);
+        }
+        return v;
+    }
+\end{verbatim}
