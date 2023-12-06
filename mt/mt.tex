@@ -42,7 +42,7 @@
 \begin{frame}
 	今天的题单：{\color{blue}\href{https://www.luogu.com.cn/training/428639}{点我}}
 
-	今天是我第一次上台，ppt 可能不是那么美观，如果有错误请大胆指出。
+	今天是我第一次上台，PPT 可能不是那么美观，如果有错误请大胆指出。
 
 	例题不会很难，请放心食用。
 \end{frame}
@@ -329,7 +329,7 @@ if(abs(q.l-l)+abs(q.r-r)>(r-l+1)+(q.r-q.l+1))
 \end{frame}
 
 \begin{frame}[fragile]{预处理 $bel$}
-	我写好几题才发现其他大佬都预处理了 $bel$，于是赶紧改过来。
+	我写好几题才发现其他大佬都预处理了 $bel$，于是赶紧改过来。快了 \href{https://www.luogu.com.cn/record/138365971}{\color{blue}$58$ ms}。
 	\small
 \begin{verbatim}
 int S;
@@ -448,6 +448,7 @@ struct modify// 新增：修改操作
 {int p,v;};modify mo[N];
 \end{verbatim}
 \end{frame}
+
 \begin{frame}[fragile]
 {例题：{\color{blue}\href{https://www.luogu.com.cn/problem/P1903}{P1903 [国家集训队] 数颜色 / 维护队列}}}
 \tiny
@@ -477,6 +478,35 @@ void mt()
     }
 }
 \end{verbatim}
+\end{frame}
+
+\section{其他莫队}
+
+\begin{frame}{简介}
+	对于某些题目，普通莫队可能难以解决。如：
+	{\color{blue}\href{https://www.luogu.com.cn/problem/AT_joisc2014_c}{AT\_joisc2014\_c 歴史の研究}}。
+
+	此题添加数很方便，但删除数却很麻烦。因为当最大值改变（如变小）时，我们无法确定新的最大值。
+
+	这时就要用到回滚莫队了。当删除和添加只有一个可实现时，就只用一个操作，剩下的就回滚解决。
+	\pause
+
+	当然还有树上莫队、二维莫队，由于难度过高，\sout{我自己也不会，}就不多做介绍了。可以通过 OI-Wiki 自学。
+\end{frame}
+
+\section{结束}
+
+\begin{frame}
+	\begin{center}
+		\Huge Thanks!
+	\end{center}
+\end{frame}
+
+\section{后记}
+\begin{frame}
+	此 PPT 是本人一边学习莫队一边写的，肯定有诸多不足，还请包容。
+	
+	题单中
 \end{frame}
 
 \end{document}
