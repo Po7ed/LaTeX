@@ -257,8 +257,6 @@ int main()
 	反之若 $bel[l_i]$ 为偶数，以 $r_i$ 为第二关键字降序排序。}
 	\pause
 
-	通俗来讲：即对于属于奇数块的询问，$r$ 按从小到大排序，对于属于偶数块的排序，$r$ 从大到小排序。
-
 	这样我们的 $r$ 指针在处理完这个奇数块的问题后，将在返回的途中处理偶数块的问题，
 	再向 $n$ 移动处理下一个奇数块的问题，优化了 $r$ 指针的移动次数，
 	一般情况下，这种优化能让程序快 $30\%$ 左右。——OI-Wiki。
@@ -349,8 +347,7 @@ void mt()
 
 \subsection{例题}
 
-\begin{frame}
-{例题：{\color{blue}\href{https://www.luogu.com.cn/problem/SP3267}{DQUERY - D-query}}}
+\begin{frame}{例题：{\color{blue}\href{https://www.luogu.com.cn/problem/SP3267}{DQUERY - D-query}}}
 	简要题意：给出一个长度为 $n$ 的数列 $a$，$m$ 个询问，每次询问给出数对 $l,r$ 表示
 	查询区间 $[l,r]$ 中有多少不同的数。
 
@@ -373,8 +370,7 @@ void mt()
 	其他的正常地跑莫队即可。\textbf{但此题似乎卡常。}
 \end{frame}
 
-\begin{frame}
-{例题：{\color{blue}\href{https://www.luogu.com.cn/problem/P2709}{P2709 小B的询问}}}
+\begin{frame}{例题：{\color{blue}\href{https://www.luogu.com.cn/problem/P2709}{P2709 小B的询问}}}
 	简要题意：给出一个长度为 $n$ 的数列 $a$（值域 $[1,k]$），$m$ 个询问，每次询问给出数对 $l,r$ 表示
 	查询：  
 	$$\sum\limits_{i=1}^k c_i^2$$
@@ -391,8 +387,7 @@ void mt()
 	由于每次添加或删除数时只会改变 $c_{a[pos]}$，而且只会 $\pm1$。所以：
 \end{frame}
 
-\begin{frame}
-{例题：{\color{blue}\href{https://www.luogu.com.cn/problem/P2709}{P2709 小B的询问}}}
+\begin{frame}{例题：{\color{blue}\href{https://www.luogu.com.cn/problem/P2709}{P2709 小B的询问}}}
 	由
 	$$
 	s=\sum\limits_{i=1}^k c_i^2=c_1^2+\cdots+c_{a[pos]}^2+\cdots+c_k^2
@@ -406,6 +401,96 @@ void mt()
 	\end{aligned}
 	$$
 	转移时修改即可。
+\end{frame}
+
+\begin{frame}{例题：{\color{blue}\href{https://www.luogu.com.cn/problem/P5268}{P5268 [SNOI2017] 一个简单的询问}}}
+	简要题意：给出一个长度为 $n$ 的数列 $a$（值域 $[1,n]$），$m$ 个询问，每次询问给出数对 $l_1,r_1,l_2,r_2$ 表示
+	查询：
+	$$
+	\sum\limits_{x=0}^\infty \text{get}(l_1,r_1,x)\times \text{get}(l_2,r_2,x)
+	$$
+	$\text{get}(l,r,x)$ 表示区间 $[l,r]$ 中 $x$ 的出现次数。
+
+	数据范围：$n,m\le 5\times 10^4,1\le a_i\le n$。
+\end{frame}
+
+\begin{frame}{例题：{\color{blue}\href{https://www.luogu.com.cn/problem/P5268}{P5268 [SNOI2017] 一个简单的询问}}}
+	首先因为每次询问给出的是一个四元组，所以莫队不能直接做。
+	\pause
+
+	考虑对询问进行拆分。
+
+	可以发现，$\text{get}(l,r,x)=\text{get}(1,r,x)-\text{get}(1,l-1,x)$。展开：
+	
+	（为方便，记 $\text{g}(p)=\text{get}(1,p,x)$）
+
+	$$
+	\begin{aligned}
+		&\sum\limits_{x=0}^\infty
+		\text{get}(l_1,r_1,x)\times\text{get}(l_2,r_2,x)\\
+		=&\sum\limits_{x=0}^\infty
+		\big(\text{g}(r_1)-\text{g}(l_1-1)\big)\times
+		\big(\text{g}(r_2)-\text{g}(l_2-1)\big)\\
+		=&\sum\limits_{x=0}^\infty
+		\text{g}(r_1)\times\text{g}(r_2)-\text{g}(l_1-1)\times\text{g}(r_2)\\
+		&-\text{g}(l_2-1)\times\text{g}(r_1)+\text{g}(l_1-1)\times\text{g}(l_2-1)
+	\end{aligned}
+	$$
+
+\end{frame}
+\begin{frame}{例题：{\color{blue}\href{https://www.luogu.com.cn/problem/P5268}{P5268 [SNOI2017] 一个简单的询问}}}
+	若记 $\text{ask}(l,r)=\text{g}(l)\times\text{g}(r)$，
+	$$
+	\text{原式}=\text{ask}(r_1,r_2)-\text{ask}(l_1-1,r_2)-\text{ask}(l_2-1,r_1)+\text{ask}(l_1,l_2)
+	$$
+
+	肉眼可见，我们将原来的四元询问转换为四个二元询问。虽然 $l,r$ 并不表示区间，但我们可以用相同的思想处理询问。
+	
+	如何 $O(1)$ 转移 $\text{ask}(l,r)$？
+	考虑若其中一个（$\text{g}(l),\text{g}(r)$）增加 1，则它们的积会增加另一个数。具体见代码。
+	
+	核心代码：
+\end{frame}
+\begin{frame}[fragile]{例题：{\color{blue}\href{https://www.luogu.com.cn/problem/P5268}{P5268 [SNOI2017] 一个简单的询问}}}
+\tiny
+\begin{verbatim}
+// cl[i]: [1,l] 中 i 的个数；cr[i]: [1,r] 中 i 的个数；now: sum(cl[i]*cr[i])
+int cl[N],cr[N],now,ans[N];
+void mt()
+{
+    init();
+    sort(q+1,q+(m<<2)+1);// 原来的一个询问拆成四个，所以 <<2
+    for(int i=1,l=0,r=0;i<=(m<<2);i++)
+    {
+        #define q q[i]
+        while(l<q.l)++cl[a[++l]],now+=cr[a[l]];// 相应的转移
+        while(r<q.r)++cr[a[++r]],now+=cl[a[r]];
+        while(q.l<l)--cl[a[l]],now-=cr[a[l--]];
+        while(q.r<r)--cr[a[r]],now-=cl[a[r--]];
+        ans[q.id]+=(q.t*now);
+        #undef q
+    }
+}
+\end{verbatim}
+\end{frame}
+\begin{frame}[fragile]{例题：{\color{blue}\href{https://www.luogu.com.cn/problem/P5268}{P5268 [SNOI2017] 一个简单的询问}}}
+\tiny
+\begin{verbatim}
+int main()
+{
+    ...
+    for(int i=1,l1,r1,l2,r2,p=1;i<=m;i++)
+    {
+        scanf("%d %d %d %d",&l1,&r1,&l2,&r2);
+        q[p++]={min(l1-1,l2-1),max(l1-1,l2-1),i,1 };// 拆开
+        q[p++]={min(l1-1,r2),  max(l1-1,r2),  i,-1};
+        q[p++]={min(l2-1,r1),  max(l2-1,r1),  i,-1};
+        q[p++]={min(r1,r2),    max(r1,r2),    i,1 };
+    }
+    ...
+    return 0;
+}
+\end{verbatim}
 \end{frame}
 
 \section{带修莫队}
@@ -422,8 +507,7 @@ void mt()
 \end{frame}
 
 \subsection{例题}
-\begin{frame}[fragile]
-{例题：{\color{blue}\href{https://www.luogu.com.cn/problem/P1903}{P1903 [国家集训队] 数颜色 / 维护队列}}}
+\begin{frame}[fragile]{例题：{\color{blue}\href{https://www.luogu.com.cn/problem/P1903}{P1903 [国家集训队] 数颜色 / 维护队列}}}
 	简要题意：给出一个长度为 $n$ 的数列，$m$ 个操作，要求支持两种操作：查询区间有多少不同的数、单点修改。
 
 	数据范围：$n,m\le 1.33333\times 10^5,a_i\le 10^6$。
@@ -447,8 +531,7 @@ struct modify// 新增：修改操作
 \end{verbatim}
 \end{frame}
 
-\begin{frame}[fragile]
-{例题：{\color{blue}\href{https://www.luogu.com.cn/problem/P1903}{P1903 [国家集训队] 数颜色 / 维护队列}}}
+\begin{frame}[fragile]{例题：{\color{blue}\href{https://www.luogu.com.cn/problem/P1903}{P1903 [国家集训队] 数颜色 / 维护队列}}}
 \tiny
 \begin{verbatim}
 int cnt[A],bt,ans[N];// 类似于普通莫队
@@ -496,7 +579,9 @@ void mt()
 
 \begin{frame}
 	\begin{center}
-		\Huge Thanks!
+		% \Huge
+		\fontsize{48pt}{0pt}\selectfont
+		Thanks!
 	\end{center}
 \end{frame}
 
