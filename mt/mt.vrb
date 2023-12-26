@@ -16,7 +16,7 @@ void mt()
         while(r<q.r)bt+=(!(cnt[a[++r]]++));
         while(l<q.l)bt-=(!(--cnt[a[l++]]));
         while(q.r<r)bt-=(!(--cnt[a[r--]]));
-        // 可怕的压行：【需要当场解释】
+        // 压行：先加时间 如果在当前区间内       相应的转移       *直接交换 v 和 a[p]
         while(t<q.t){t++;if(l<=p&&p<=r)bt-=(!(--cnt[a[p]])-!(cnt[v]++));swap(a[p],v);}
         while(q.t<t){if(l<=p&&p<=r)bt-=(!(--cnt[a[p]])-!(cnt[v]++));swap(a[p],v);t--;}
         ans[q.id]=bt;
